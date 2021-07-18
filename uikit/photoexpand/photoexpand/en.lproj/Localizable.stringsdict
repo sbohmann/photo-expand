@@ -5,7 +5,7 @@
     <key>years_on_hills</key>
     <dict>
         <key>NSStringLocalizedFormatKey</key>
-        <string>Oh, the %2$#@n_hills@. %1$#@n_years@ will pass on %2$#@n_hills@</string>
+        <string>Oh, the %2$#@n_hills@. %1$#@n_years@ will pass on the %2$#@n_hills@</string>
         <key>n_years</key>
         <dict>
             <key>NSStringFormatSpecTypeKey</key>
@@ -26,11 +26,11 @@
             <key>NSStringFormatValueTypeKey</key>
             <string>d</string>
             <key>zero</key>
-            <string>the flat land</string>
+            <string>flat land</string>
             <key>one</key>
-            <string>the one hill</string>
+            <string>one hill</string>
             <key>other</key>
-            <string>the %d hills</string>
+            <string>%d hills</string>
         </dict>
     </dict>
 </dict>
