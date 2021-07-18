@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>years_on_hills</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>Oh, the %2$#@n_hills@. %1$#@n_years@ will pass on %2$#@n_hills@</string>
+        <key>n_years</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No more year</string>
+            <key>one</key>
+            <string>One year</string>
+            <key>other</key>
+            <string>%d years</string>
+        </dict>
+        <key>n_hills</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>the flat land</string>
+            <key>one</key>
+            <string>the one hill</string>
+            <key>other</key>
+            <string>the %d hills</string>
+        </dict>
+    </dict>
+	<key>StringKey</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VARIABLE@</string>
+		<key>VARIABLE</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string></string>
+			<key>zero</key>
+			<string></string>
+			<key>one</key>
+			<string></string>
+			<key>two</key>
+			<string></string>
+			<key>few</key>
+			<string></string>
+			<key>many</key>
+			<string></string>
+			<key>other</key>
+			<string></string>
+		</dict>
+	</dict>
+</dict>
+</plist>
