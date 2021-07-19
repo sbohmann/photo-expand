@@ -1,0 +1,14 @@
+localization:
+  first_name: 'И́мя'
+  last_name: 'Фами́лия'
+  years_on_hills:
+    arguments: [number_of_years, number_of_hills]
+    result: 'The $hills. $years will pass on the $hills. The number of years will be $number_of_years and the number of hills will be $number_of_hills'
+    hills:
+      zero: 'flat land'
+      one: 'single hill'
+      other: '$number_of_years hills'
+    years:
+      zero: 'no more year'
+      one: 'one year'
+      other: '$number_of_years years'

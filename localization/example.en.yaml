@@ -1,12 +1,24 @@
 localization:
-  name: 'Name'
-  years_on_hills(number_of_years, number_of_hills):
-    result: 'The $hills. $years will pass on the $hills'
+  first_name: 'First Name'
+  last_name: 'Last Name'
+  years_on_hills:
+    arguments: [number_of_years, number_of_hills]
+    result:
+      The {{hills}}.
+      {{years(number_of_years)}} will pass
+      on the {{hills}}.
+      The number of years will be {{number_of_years}}
+      and the number of hills will be {{number_of_hills}}.
+      If there wewre aas many hills as years,
+      that would be {{hills(number_of_years)}}
     hills:
+      type: pluralization
       zero: 'flat land'
       one: 'single hill'
       other: '$number_of_years hills'
     years:
+      type: pluralization
+      number: number_of_hills
       zero: 'no more year'
       one: 'one year'
       other: '$number_of_years years'
