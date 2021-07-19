@@ -9,7 +9,7 @@ localization:
       on the {{hills}}.
       The number of years will be {{number_of_years}}
       and the number of hills will be {{number_of_hills}}.
-      If there wewre as many hills as years,
+      If there were as many hills as years,
       that would be {{hills(number_of_years)}}
     hills:
       type: pluralization
