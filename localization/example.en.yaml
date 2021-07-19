@@ -2,8 +2,8 @@ localization:
   first_name: 'First Name'
   last_name: 'Last Name'
   number_of_files:
-    arguments: [number_of_files]
-    result: 'Number of files: {{number_of_files}}'
+    arguments: [n]
+    result: 'Number of files: {{n}}'
   years_on_hills:
     arguments: [number_of_years, number_of_hills]
     result:
