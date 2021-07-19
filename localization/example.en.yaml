@@ -18,7 +18,7 @@ localization:
       other: '$number hills'
     years:
       type: pluralization
-      number: number_of_hills
+      number: number_of_years
       zero: 'no more year'
       one: 'one year'
       other: '$number years'
