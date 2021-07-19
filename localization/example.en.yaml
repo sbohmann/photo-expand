@@ -7,21 +7,21 @@ localization:
   years_on_hills:
     arguments: [number_of_years, number_of_hills]
     result:
-      The {{hills}}.
+      'The {{hills}}.
       {{years(number_of_years)}} will pass
       on the {{hills}}.
       The number of years will be {{number_of_years}}
       and the number of hills will be {{number_of_hills}}.
       If there were as many hills as years,
-      that would be {{hills(number_of_years)}}
+      that would be {{hills(number_of_years)}}'
     hills:
       type: pluralization
       number: number_of_hills
       zero: 'flat land'
       one: 'single hill'
-      other: '$number hills'
+      other: '{{number}} hills'
     years:
       type: pluralization
       zero: 'No more year'
       one: 'One year'
-      other: '$number years'
+      other: '{{number}} years'
