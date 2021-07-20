@@ -1,34 +1,72 @@
 const fs = require('fs')
 const yaml = require('js-yaml')
 
-let localization = yaml.load(fs.readFileSync('example.en.yaml', 'utf-8'))
-console.log(JSON.stringify(localization, undefined, 2))
-console.log('[' + localization.years_on_hills.result + ']')
+function readLocalization() {
+    let localization = yaml.load(fs.readFileSync('example.en.yaml', 'utf-8'))
 
-for (let key in localization) {
-    console.log(key)
-    let value = localization[key];
-    console.log(value)
-    if (typeof value === 'string') {
-        console.log('string value: [' + value + ']')
-    } else if (typeof value === 'object') {
-        let type = value.type;
-        if (type) {
-            if (type === 'pluralization') {
-                let arguments = value.arguments;
-                if (arguments) {
-                    if (typeof arguments !== 'array') {
-                        console.log('arguments is not an array')
-                    }
-                    console.log(arguments)
-                } else {
-                    console.log('Missing argument list for complex localization value')
-                }
-            } else {
-                console.log('Unsupported type: [' + type + ']')
-            }
+    for (let key in localization) {
+        let value = localization[key];
+        if (typeof value === 'string') {
+            log(key, 'string value: [' + value + ']')
+        } else if (typeof value === 'object') {
+            readComplexLocalization(key, value);
         } else {
-            console.log('Missing type element')
+            error(key, 'unexpected value type: ' + typeof (value))
         }
     }
 }
+
+function readComplexLocalization(context, value) {
+    let arguments = value.arguments;
+    if (arguments) {
+        if (typeof arguments !== 'object' || !Array.isArray(arguments)) {
+            error(context, 'arguments is not an array - type: ' + typeof arguments)
+        }
+        log(context + '.arguments', '[' + arguments.join(', ') + ']')
+    } else {
+        error(context, 'Missing argument list for complex localization value')
+    }
+    let result = value.result
+    if (result) {
+        for (let childElementName in value) {
+            if (!isKeyword(childElementName)) {
+                let childElement = value[childElementName]
+                readChildElement(context + '.' + childElementName, childElement);
+            }
+        }
+    }
+}
+
+function isKeyword(childElementName) {
+    switch (childElementName) {
+        case 'result':
+        case 'arguments':
+            return true
+        default:
+            return false
+    }
+}
+
+function readChildElement(context, childElement) {
+    let type = childElement.type;
+    if (type) {
+        if (type === 'pluralization') {
+            log(context, 'Encountered a pluralization')
+        } else {
+            error(context, 'Unsupported child element type: [' + type + ']')
+        }
+    } else {
+        error(context, 'Missing type element')
+    }
+}
+
+function log(context, value) {
+    console.log(context + ': ' + value)
+}
+
+function error(context, message) {
+    console.log(context + ': ' + message)
+    process.exit(1)
+}
+
+readLocalization()
