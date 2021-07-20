@@ -34,6 +34,11 @@ function readComplexLocalization(context, value) {
             error(context, 'arguments is not an array - type: ' + typeof arguments)
         }
         log(context + '.arguments', '[' + arguments.join(', ') + ']')
+        for (let argument of arguments) {
+            if (isReservedArgumentName(argument.name)) {
+                error(context, 'Argument names [' + argument.name + "] is reserved")
+            }
+        }
     } else {
         error(context, 'Missing argument list for complex localization value')
     }
@@ -46,6 +51,17 @@ function readComplexLocalization(context, value) {
             let childElement = value[childElementName]
             readVariable(context + '.' + childElementName, childElement);
         }
+    }
+}
+
+function isReservedArgumentName(name) {
+    switch (name) {
+        case 'number':
+        case 'name':
+        case 'value':
+            return true
+        default:
+            return false
     }
 }
 
@@ -65,6 +81,9 @@ function readVariable(context, variable) {
         if (type === 'pluralization') {
             let pluralization = readPluralization(context, variable);
             console.log(pluralization)
+            return (locale, arguments, number) => {
+                return pluralize(locale, pluralization, arguments, number)
+            }
         } else {
             error(context, 'Unsupported variable type: [' + type + ']')
         }
@@ -78,22 +97,26 @@ function readPluralization(context, variable) {
     if (variable.number) {
         let numberType = typeof variable.number;
         if (!numberType === 'string') {
-            error(context, 'Unexpected type of chile element number: ' + numberType)
+            error(context, 'Unexpected type of child element [number:] ' + numberType)
         }
         result.number = variable.number
     }
     for (let childElementName in variable) {
         if (pluralizationKeyNames.has(childElementName)) {
             let childElementValue = variable[childElementName]
-            let chileElementValueType = typeof childElementValue;
-            if (!chileElementValueType === 'string') {
-                error(context, 'Unexpected type of child element ' + childElementName + ": " + chileElementValueType)
+            let childElementValueType = typeof childElementValue;
+            if (!childElementValueType === 'string') {
+                error(context, 'Unexpected type of child element [' + childElementName + "]: " + childElementValueType)
             }
             result[childElementName] = childElementValue
         } else if (!isPluralizationKeyword(childElementName)) {
             error(context, 'Unexpected element: ' + childElementName)
         }
     }
+    if (!result.other) {
+        error(context, 'Number class [other] missing as required fallback')
+    }
+    result.context = context
     return result
 }
 
@@ -107,13 +130,40 @@ function isPluralizationKeyword(elementName) {
     }
 }
 
+function pluralize(locale, pluralization, arguments, number) {
+    if (!number) {
+        if (pluralization.number) {
+            number = arguments[pluralization.number]
+            if (!number) {
+                error(context +
+                    ': no value found for pluralization default number [' + pluralization.number + ']')
+            }
+        } else {
+            error(context +
+                ': neither number argument nor default number provided for pluralization')
+        }
+    }
+    let numberClass = locale.classForNumber(number)
+    if (!pluralizationKeyNames.has(numberClass)) {
+        error(pluralization.context, 'Illegal number class returned from locale ' + locale.name +
+            ' for number ' + number)
+    }
+    if (!pluralization.numberClass) {
+        numberClass = pluralizationKeys.other
+    }
+    return interpolatePluralizationResult(pluralization.numberClass, arguments, number)
+}
+
+function interpolatePluralizationResult(pluralization.numberClass, arguments, number) {
+    // TODO
+}
+
 function log(context, value) {
     console.log(context + ': ' + value)
 }
 
 function error(context, message) {
-    console.log(context + ': ' + message)
-    process.exit(1)
+    throw new Error(context + ': ' + message)
 }
 
 readLocalization()
