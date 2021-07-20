@@ -1,6 +1,17 @@
 const fs = require('fs')
 const yaml = require('js-yaml')
 
+const [pluralizationKeyNames, pluralizationKeys] = (() => {
+    const pluralizationKeyNames = ['zero', 'one', 'two', 'few', 'many', 'other']
+    let result = {}
+    for (let name of pluralizationKeyNames) {
+        result[name] = name
+    }
+    Object.freeze(result)
+    let pluralizationKeyNameSet = new Set(pluralizationKeyNames)
+    return [pluralizationKeyNameSet, result]
+})()
+
 function readLocalization() {
     let localization = yaml.load(fs.readFileSync('example.en.yaml', 'utf-8'))
 
@@ -27,18 +38,19 @@ function readComplexLocalization(context, value) {
         error(context, 'Missing argument list for complex localization value')
     }
     let result = value.result
-    if (result) {
-        for (let childElementName in value) {
-            if (!isKeyword(childElementName)) {
-                let childElement = value[childElementName]
-                readChildElement(context + '.' + childElementName, childElement);
-            }
+    if (!result) {
+        error(context, 'Missing argument list for complex localization value')
+    }
+    for (let childElementName in value) {
+        if (!isComplexValueKeyword(childElementName)) {
+            let childElement = value[childElementName]
+            readVariable(context + '.' + childElementName, childElement);
         }
     }
 }
 
-function isKeyword(childElementName) {
-    switch (childElementName) {
+function isComplexValueKeyword(elementName) {
+    switch (elementName) {
         case 'result':
         case 'arguments':
             return true
@@ -47,16 +59,51 @@ function isKeyword(childElementName) {
     }
 }
 
-function readChildElement(context, childElement) {
-    let type = childElement.type;
+function readVariable(context, variable) {
+    let type = variable.type;
     if (type) {
         if (type === 'pluralization') {
-            log(context, 'Encountered a pluralization')
+            let pluralization = readPluralization(context, variable);
+            console.log(pluralization)
         } else {
-            error(context, 'Unsupported child element type: [' + type + ']')
+            error(context, 'Unsupported variable type: [' + type + ']')
         }
     } else {
         error(context, 'Missing type element')
+    }
+}
+
+function readPluralization(context, variable) {
+    let result = {}
+    if (variable.number) {
+        let numberType = typeof variable.number;
+        if (!numberType === 'string') {
+            error(context, 'Unexpected type of chile element number: ' + numberType)
+        }
+        result.number = variable.number
+    }
+    for (let childElementName in variable) {
+        if (pluralizationKeyNames.has(childElementName)) {
+            let childElementValue = variable[childElementName]
+            let chileElementValueType = typeof childElementValue;
+            if (!chileElementValueType === 'string') {
+                error(context, 'Unexpected type of child element ' + childElementName + ": " + chileElementValueType)
+            }
+            result[childElementName] = childElementValue
+        } else if (!isPluralizationKeyword(childElementName)) {
+            error(context, 'Unexpected element: ' + childElementName)
+        }
+    }
+    return result
+}
+
+function isPluralizationKeyword(elementName) {
+    switch (elementName) {
+        case 'type':
+        case 'number':
+            return true
+        default:
+            return false
     }
 }
 
